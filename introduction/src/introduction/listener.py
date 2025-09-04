@@ -1,6 +1,7 @@
 import numpy as np
 import rospy
 from math import sqrt
+from geometry_msgs import PoseStamped
 # BEGIN QUESTION 2.3
 "*** REPLACE THIS LINE ***"
 # END QUESTION 2.3
@@ -57,7 +58,7 @@ class PoseListener:
         # "X_msgs/Y", the Python import would be "from X_msgs.msg import Y".
         # BEGIN QUESTION 2.3
         "*** REPLACE THIS LINE ***"
-        self.subscriber = None
+        self.subscriber = rospy.Subscriber('/car/car_pose', PoseStamped, self.callback)
         # END QUESTION 2.3
 
     def callback(self, msg):
