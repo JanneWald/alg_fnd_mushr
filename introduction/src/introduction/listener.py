@@ -21,7 +21,7 @@ def norm_python(data):
     for i in range(len(data)):
         total = 0
         for num in data[i]:
-            sum += (num * num)
+            total += (num * num)
         norm[i] = sqrt(total)
     # END QUESTION 2.1
     return norm
@@ -40,7 +40,7 @@ def norm_numpy(data):
     # BEGIN QUESTION 2.2
     squared = np.square(data)
     summed = np.sum(squared, axis=1)
-    normalized = sqrt(summed)
+    normalized = np.sqrt(summed)
     return normalized
     # END QUESTION 2.2
 
