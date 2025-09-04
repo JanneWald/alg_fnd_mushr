@@ -70,7 +70,10 @@ class PoseListener:
 
         # Extract and store the x and y position from the message data
         # BEGIN QUESTION 2.4
-        "*** REPLACE THIS LINE ***"
+        x = msg.pose.position.x
+        y = msg.pose.position.y
+        self.storage.append((x,y))
+
         # END QUESTION 2.4
         if len(self.storage) == self.size:
             self.done = True
