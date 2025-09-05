@@ -1,7 +1,7 @@
 import numpy as np
 import rospy
 from math import sqrt
-from geometry_msgs import PoseStamped
+from geometry_msgs.msg import PoseStamped
 # BEGIN QUESTION 2.3
 "*** REPLACE THIS LINE ***"
 # END QUESTION 2.3
@@ -31,7 +31,7 @@ def norm_numpy(data):
     """Compute the norm for each row of a numpy array using numpy functions.
 
     >>> data = np.array([[3, 4],
-    ...                  [5, 12]])
+    ...                  [5, 12]]) 
     >>> norm_numpy(data)
     array([ 5., 13.])
     """

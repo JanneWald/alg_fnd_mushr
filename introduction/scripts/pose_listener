@@ -45,8 +45,16 @@ if __name__ == "__main__":
     # Uncomment plt.show() to visualize the plot
     # plt.show()
 
+
     # Use norm_numpy to compute the distance from the origin over time. Then,
     # plot the distance over time as a line chart and save the plot.
     # BEGIN QUESTION 2.5
-    "*** REPLACE THIS LINE ***"
+    plt.figure()
+    distances = norm_numpy(locations)
+    plt.plot(distances)
+    plt.title("Car distance from origin")
+    plt.xlabel("Step")
+    plt.ylabel("Eucledian Ditance (m)")
+    # plt.ylim(-5.0, 10.0)
+    plt.savefig("distances.png")
     # END QUESTION 2.5
