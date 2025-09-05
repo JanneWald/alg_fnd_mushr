@@ -1,6 +1,6 @@
 # Project 1 Writeup
 
-CS3964
+CS4963
 Janne Wald
 
 #### Question 1
@@ -11,13 +11,16 @@ Janne Wald
 - A **Subscriber** reads designated topics where it then executes some callback function to handle the message
 
 #### Question 2
+
 The purpose of a `launch` file is to cleanly pass command line arguments into a Ros Node
 
 #### Question 3
-![Normal Figure 8 distances](cse2_2_map_screenshot.png "Car Distance from origin")
+
+![New Map](cse2_2_map_screenshot.png "New Map")
 
 #### Question 4
-i dont wann do that
+
+![Normalization comparison](norm_comparison.png "Normalization comparison")
 
 #### Question 5
 
