@@ -121,10 +121,29 @@ class KinematicCarMotionModel:
             dt (float): control duration
         """
         n_particles = states.shape[0]
-
         # Hint: you may find the np.random.normal function useful
         # BEGIN QUESTION 1.2
-        "*** REPLACE THIS LINE ***"
+        # Step 1: sample noisy controls (per particle)
+        noisy_vel = np.random.normal(loc=vel, scale=self.vel_std, size=n_particles)
+        noisy_delta = np.random.normal(loc=delta, scale=self.delta_std, size=n_particles)
+        controls = np.column_stack([noisy_vel, noisy_delta])  # (M, 2)
+
+        # Step 2: compute deterministic changes with noisy controls
+        deltas = self.compute_changes(states, controls, dt)  # (M, 3), [dx, dy, dθ]
+
+        # Step 3: apply deterministic changes
+        states += deltas
+
+        # Step 4: add state noise
+        state_noise = np.zeros_like(states, dtype=float)
+        state_noise[:, 0] = np.random.normal(0, self.x_std, size=n_particles)      # x-noise
+        state_noise[:, 1] = np.random.normal(0, self.y_std, size=n_particles)      # y-noise
+        state_noise[:, 2] = np.random.normal(0, self.theta_std, size=n_particles)  # θ-noise
+        states += state_noise
+
+        # Step 5: wrap θ into (-π, π]
+        states[:, 2] = (states[:, 2] - np.pi) % (2 * np.pi) - np.pi
+        states[:, 2][states[:, 2] <= -np.pi] += 2 * np.pi
         # END QUESTION 1.2
 
 
