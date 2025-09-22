@@ -44,7 +44,19 @@ class ParticleInitializer:
         n_particles = particles.shape[0]
         # Hint: use utils.quaternion_to_angle to compute the orientation theta.
         # BEGIN QUESTION 3.1
-        "*** REPLACE THIS LINE ***"
+
+        # Extract mean pose
+        x_mean = msg.position.x
+        y_mean = msg.position.y
+        theta_mean = utils.quaternion_to_angle(msg.orientation)  # convert quaternion to yaw
+
+        # Sample particles from Gaussian around the mean pose
+        particles[:, 0] = np.random.normal(x_mean, self.x_std, n_particles)  # x
+        particles[:, 1] = np.random.normal(y_mean, self.y_std, n_particles)  # y
+        particles[:, 2] = np.random.normal(theta_mean, self.theta_std, n_particles)  # theta
+
+        # Initialize weights uniformly
+        weights[:] = 1.0 / n_particles        
         # END QUESTION 3.1
 
 
