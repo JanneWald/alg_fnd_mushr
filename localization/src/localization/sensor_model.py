@@ -76,25 +76,31 @@ class SingleBeamSensorModel:
 
         # Use obs_r and sim_r to vectorize the sensor model precomputation.
         diff = sim_r - obs_r
-        # BEGIN QUESTION 2.1
 
+        # Begin QUestion 2
         # 1️⃣ Hit model (Gaussian around expected measurement)
-        p_hit = np.exp(-0.5 * (diff / self.hit_std) ** 2)
-        p_hit /= (self.hit_std * np.sqrt(2 * np.pi))
+        p_hit = np.zeros_like(prob_table)
+        if self.z_hit > 0 and self.hit_std > 0:
+            p_hit = np.exp(-0.5 * (diff / self.hit_std) ** 2)
+            p_hit /= (self.hit_std * np.sqrt(2 * np.pi))
 
         # 2️⃣ Short model (unexpected obstacle closer than expected)
-        p_short = np.zeros_like(p_hit)
-        mask = (obs_r <= sim_r) & (sim_r > 0)  # avoid division by zero
-        p_short[mask] = 2 * (sim_r[mask] - obs_r[mask]) / (sim_r[mask] ** 2)
+        p_short = np.zeros_like(prob_table)
+        if self.z_short > 0:
+            mask = (obs_r <= sim_r) & (sim_r > 0)
+            p_short[mask] = 2 * (sim_r[mask] - obs_r[mask]) / (sim_r[mask] ** 2)
 
         # 3️⃣ Max model (sensor returns maximum range)
-        p_max = np.zeros_like(p_hit)
-        p_max[-1, :] = 1.0  # assign mass to r = max_r
+        p_max = np.zeros_like(prob_table)
+        if self.z_max > 0:
+            p_max[-1, :] = 1.0
 
         # 4️⃣ Random measurement model
-        p_rand = np.ones_like(p_hit) / table_width
+        p_rand = np.zeros_like(prob_table)
+        if self.z_rand > 0:
+            p_rand[:] = 1.0 / table_width
 
-        # Combine components with weights from config
+        # Combine components with weights
         prob_table = (
             self.z_hit * p_hit
             + self.z_short * p_short
@@ -102,10 +108,15 @@ class SingleBeamSensorModel:
             + self.z_rand * p_rand
         )
 
-        # Safe normalization (avoid divide by zero)
+        # Normalize per expected measurement
         col_sum = prob_table.sum(axis=0, keepdims=True)
-        col_sum[col_sum == 0] = 1.0
-        prob_table /= col_sum
+
+        # Only set NaN if column sum is exactly zero
+        prob_table[:, col_sum[0, :] == 0] = np.nan
+
+        # Normalize valid columns
+        mask_valid = col_sum[0, :] != 0
+        prob_table[:, mask_valid] /= col_sum[0, mask_valid]
 
         return prob_table
 
