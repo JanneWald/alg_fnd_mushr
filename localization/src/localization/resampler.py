@@ -39,5 +39,30 @@ class LowVarianceSampler:
         # https://docs.python.org/3/library/threading.html#using-locks-conditions-and-semaphores-in-the-with-statement
         with self.state_lock:
             # BEGIN QUESTION 3.2
-            "*** REPLACE THIS LINE ***"
+            M = self.n_particles
+            new_particles = np.zeros_like(self.particles)
+            new_weights = np.zeros_like(self.weights)
+
+            # cumulative sum of weights
+            cdf = np.cumsum(self.weights)
+            cdf[-1] = 1.0  # ensure sum is exactly 1 to avoid numerical issues
+
+            # low-variance sampling
+            r = np.random.uniform(0, 1 / M)
+            indices = np.zeros(M, dtype=int)
+            c = 0
+            i = 0
+            for m in range(M):
+                u = r + m / M
+                while u > cdf[i]:
+                    i += 1
+                indices[m] = i
+
+            # copy resampled particles
+            new_particles[:] = self.particles[indices]
+            new_weights[:] = 1.0 / M  # all weights uniform after resampling
+
+            # update in-place
+            self.particles[:] = new_particles
+            self.weights[:] = new_weights
             # END QUESTION 3.2
