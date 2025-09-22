@@ -65,39 +65,54 @@ class KinematicCarMotionModel:
             M x 3 np.array, where the three columns are dx, dy, dtheta
         """
         # BEGIN QUESTION 1.1
-        x_t = states[:, 0]
-        y_t = states[:, 1]
-        θ_t = states[:, 2]
+        # Ensure float dtype
+        states = states.astype(float, copy=False)
+        controls = controls.astype(float, copy=False)
+
+        x = states[:, 0]
+        y = states[:, 1]
+        θ = states[:, 2]
 
         v = controls[:, 0]
         δ = controls[:, 1]
 
         L = self.car_length
 
-        # Zero out small steering angles
+        # Initialize deltas
+        dx = np.zeros_like(x)
+        dy = np.zeros_like(y)
+        dθ = np.zeros_like(θ)
+
+        # If dt is very small, assume straight-line motion (no heading change)
+        if np.abs(dt) < delta_threshold:
+            dx = v * np.cos(θ) * dt
+            dy = v * np.sin(θ) * dt
+            dθ[:] = 0.0
+            return np.stack([dx, dy, dθ], axis=1)
+
+        # Zero out tiny steering angles for numerical stability
         δ[np.abs(δ) < delta_threshold] = 0.0
 
-        # Straight motion mask
+        # Determine straight vs turning motion
         straight = δ == 0.0
+        turning = ~straight
 
-        dx = np.zeros_like(x_t)
-        dy = np.zeros_like(y_t)
-        dθ = np.zeros_like(θ_t)
-
-        # Straight-line case
-        dx[straight] = v[straight] * np.cos(θ_t[straight]) * dt
-        dy[straight] = v[straight] * np.sin(θ_t[straight]) * dt
+        # Straight-line motion
+        dx[straight] = v[straight] * np.cos(θ[straight]) * dt
+        dy[straight] = v[straight] * np.sin(θ[straight]) * dt
         dθ[straight] = 0.0
 
-        # Turning case
-        turning = ~straight
-        θ_new = θ_t[turning] + (v[turning] / L) * np.tan(δ[turning]) * dt
-        dx[turning] = (L / np.tan(δ[turning])) * (np.sin(θ_new) - np.sin(θ_t[turning]))
-        dy[turning] = (L / np.tan(δ[turning])) * (-np.cos(θ_new) + np.cos(θ_t[turning]))
-        dθ[turning] = θ_new - θ_t[turning]
+        # Turning motion
+        θ_new = θ[turning] + (v[turning] / L) * np.tan(δ[turning]) * dt
+        dx[turning] = (L / np.tan(δ[turning])) * (np.sin(θ_new) - np.sin(θ[turning]))
+        dy[turning] = (L / np.tan(δ[turning])) * (-np.cos(θ_new) + np.cos(θ[turning]))
+        dθ[turning] = θ_new - θ[turning]
 
-        return np.stack([dx, dy, dθ], axis=1).astype(float)
-        # END QUESTION 1.1
+        # Wrap dθ into (-π, π]
+        dθ = (dθ - np.pi) % (2 * np.pi) - np.pi
+        dθ[dθ <= -np.pi] += 2 * np.pi
+
+        return np.stack([dx, dy, dθ], axis=1)
 
     def apply_motion_model(self, states, vel, delta, dt):
         """Propagate states through the noisy kinematic car motion model.
