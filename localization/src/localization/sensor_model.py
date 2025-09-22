@@ -87,18 +87,20 @@ class SingleBeamSensorModel:
         # 2️⃣ Short model (unexpected obstacle closer than expected)
         p_short = np.zeros_like(prob_table)
         if self.z_short > 0:
-            mask = (obs_r <= sim_r) & (sim_r > 0)
+            mask = (obs_r <= sim_r) & (sim_r > 0) & (obs_r < max_r)  # short cannot be max
             p_short[mask] = 2 * (sim_r[mask] - obs_r[mask]) / (sim_r[mask] ** 2)
 
         # 3️⃣ Max model (sensor returns maximum range)
         p_max = np.zeros_like(prob_table)
         if self.z_max > 0:
-            p_max[-1, :] = 1.0
+            p_max[-1, :] = 1.0  # only assign mass to max_r
 
         # 4️⃣ Random measurement model
         p_rand = np.zeros_like(prob_table)
         if self.z_rand > 0:
-            p_rand[:] = 1.0 / table_width
+            if table_width > 1:
+                p_rand[:-1, :] = 1.0 / (table_width - 1)  # exclude max_r
+            # if table_width == 1 (max_r=0), leave as zeros → undefined
 
         # Combine components with weights
         prob_table = (
@@ -111,7 +113,7 @@ class SingleBeamSensorModel:
         # Normalize per expected measurement
         col_sum = prob_table.sum(axis=0, keepdims=True)
 
-        # Only set NaN if column sum is exactly zero
+        # Set undefined columns (sum=0) to NaN
         prob_table[:, col_sum[0, :] == 0] = np.nan
 
         # Normalize valid columns
