@@ -3,6 +3,7 @@ from __future__ import division
 from threading import Lock
 import numpy as np
 import rospy
+from math import cos, sin, tan
 
 from std_msgs.msg import Float64
 from vesc_msgs.msg import VescStateStamped
@@ -64,8 +65,38 @@ class KinematicCarMotionModel:
             M x 3 np.array, where the three columns are dx, dy, dtheta
         """
         # BEGIN QUESTION 1.1
-        "*** REPLACE THIS LINE ***"
-        return np.zeros_like(states, dtype=float)
+        x_t = states[:, 0]
+        y_t = states[:, 1]
+        θ_t = states[:, 2]
+
+        v = controls[:, 0]
+        δ = controls[:, 1]
+
+        L = self.car_length
+
+        # Zero out small steering angles
+        δ[np.abs(δ) < delta_threshold] = 0.0
+
+        # Straight motion mask
+        straight = δ == 0.0
+
+        dx = np.zeros_like(x_t)
+        dy = np.zeros_like(y_t)
+        dθ = np.zeros_like(θ_t)
+
+        # Straight-line case
+        dx[straight] = v[straight] * np.cos(θ_t[straight]) * dt
+        dy[straight] = v[straight] * np.sin(θ_t[straight]) * dt
+        dθ[straight] = 0.0
+
+        # Turning case
+        turning = ~straight
+        θ_new = θ_t[turning] + (v[turning] / L) * np.tan(δ[turning]) * dt
+        dx[turning] = (L / np.tan(δ[turning])) * (np.sin(θ_new) - np.sin(θ_t[turning]))
+        dy[turning] = (L / np.tan(δ[turning])) * (-np.cos(θ_new) + np.cos(θ_t[turning]))
+        dθ[turning] = θ_new - θ_t[turning]
+
+        return np.stack([dx, dy, dθ], axis=1).astype(float)
         # END QUESTION 1.1
 
     def apply_motion_model(self, states, vel, delta, dt):
