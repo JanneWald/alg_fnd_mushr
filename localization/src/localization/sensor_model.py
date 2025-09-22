@@ -78,45 +78,43 @@ class SingleBeamSensorModel:
         diff = sim_r - obs_r
 
         # Begin QUestion 2
-        # 1️⃣ Hit model (Gaussian around expected measurement)
+
+        # Hit model
         p_hit = np.zeros_like(prob_table)
         if self.z_hit > 0 and self.hit_std > 0:
             p_hit = np.exp(-0.5 * (diff / self.hit_std) ** 2)
             p_hit /= (self.hit_std * np.sqrt(2 * np.pi))
 
-        # 2️⃣ Short model (unexpected obstacle closer than expected)
+        # Short model 
         p_short = np.zeros_like(prob_table)
         if self.z_short > 0:
             mask = (obs_r <= sim_r) & (sim_r > 0) & (obs_r < max_r)  # short cannot be max
             p_short[mask] = 2 * (sim_r[mask] - obs_r[mask]) / (sim_r[mask] ** 2)
 
-        # 3️⃣ Max model (sensor returns maximum range)
+        # Max model
         p_max = np.zeros_like(prob_table)
         if self.z_max > 0:
             p_max[-1, :] = 1.0  # only assign mass to max_r
 
-        # 4️⃣ Random measurement model
+        # Random measurement model
         p_rand = np.zeros_like(prob_table)
         if self.z_rand > 0:
             if table_width > 1:
                 p_rand[:-1, :] = 1.0 / (table_width - 1)  # exclude max_r
-            # if table_width == 1 (max_r=0), leave as zeros → undefined
 
-        # Combine components with weights
+        # Combine components with weights 
         prob_table = (
             self.z_hit * p_hit
             + self.z_short * p_short
             + self.z_max * p_max
             + self.z_rand * p_rand
         )
-
-        # Normalize per expected measurement
         col_sum = prob_table.sum(axis=0, keepdims=True)
 
-        # Set undefined columns (sum=0) to NaN
+        # Set undefined columns to NaN
         prob_table[:, col_sum[0, :] == 0] = np.nan
 
-        # Normalize valid columns
+        # Normalize the normal columns :|
         mask_valid = col_sum[0, :] != 0
         prob_table[:, mask_valid] /= col_sum[0, mask_valid]
 

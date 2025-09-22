@@ -33,7 +33,7 @@ The reason that our model is helps against this is with normalization and weight
 This is our inital sensor model with default weight tuning. The obvios difference is that we seem to be overly confident where we are. The instuctor example has a decent vertical streak and a good glow around the spot. I am going to try setting `hit_std` much higher to 20.5
 
 ![Second Sensor Model Setup](sm2.png)
-Obviously its much higher. Here we see that the sensor model is not super sure and shows a gaussian spread from its believed position. 
+Obviously its much higher. Here we see that the sensor model is not super sure and shows a gaussian spread from its believed position.
 
 I will be changing the deviation much lower to 2
 
@@ -44,3 +44,7 @@ This version is a bit noisier and if you zoom in you can see a faint vertical st
 ## Question 5
 
 ![Third MotSensorion Model Setup](mazesensor.png)
+
+## Estimation comparison
+
+![Third MotSensorion Model Setup](comparison.png)

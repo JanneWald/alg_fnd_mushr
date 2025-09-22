@@ -50,7 +50,7 @@ class ParticleInitializer:
         y_mean = msg.position.y
         theta_mean = utils.quaternion_to_angle(msg.orientation)  # convert quaternion to yaw
 
-        # Sample particles from Gaussian around the mean pose
+        # Sample particles around the mean pose
         particles[:, 0] = np.random.normal(x_mean, self.x_std, n_particles)  # x
         particles[:, 1] = np.random.normal(y_mean, self.y_std, n_particles)  # y
         particles[:, 2] = np.random.normal(theta_mean, self.theta_std, n_particles)  # theta
