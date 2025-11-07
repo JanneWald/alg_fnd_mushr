@@ -39,6 +39,16 @@ class PIDController(BaseController):
                 (velocity should be copied from reference velocity)
         """
         # BEGIN QUESTION 2.1
-        "*** REPLACE THIS LINE ***"
-        raise NotImplementedError
+        x, y, heading = pose
+        x_ref, y_ref, heading_ref, speed_ref = reference_xytv
+        e_x, e_y = error  
+        
+        heading_error = heading - heading_ref        
+        de_y_dt = speed_ref * np.sin(heading_error)
+        
+        steering_angle = -(self.kp * e_y + self.kd * de_y_dt)
+        
+        control = np.array([speed_ref, steering_angle])
+
+        return control
         # END QUESTION 2.1
