@@ -98,8 +98,15 @@ class ModelPredictiveController(BaseController):
         rollouts[:, 0, :] = pose  # all K rollouts start at current state
 
         # BEGIN QUESTION 4.2
-        "*** REPLACE THIS LINE ***"
-        raise NotImplementedError
+        for t in range(self.T):
+            states = rollouts[:, t, :]          
+            current_controls = controls[:, t, :] 
+            
+            state_deltas = self.motion_model.compute_changes(
+                states, current_controls, dt
+            ) 
+            
+            rollouts[:, t + 1, :] = states + state_deltas
         # END QUESTION 4.2
         return rollouts
 
