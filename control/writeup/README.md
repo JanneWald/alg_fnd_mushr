@@ -1,4 +1,4 @@
-# Project 3: Control [![tests](../../../badges/submit-proj3/pipeline.svg)](../../../pipelines/submit-proj3/latest)
+# Project 3: Control
 
 by Janne Wald
 CS4963
@@ -68,3 +68,65 @@ Here we can see the limits of what we would expect, any lower and we exceed the 
 ![large circle](circle_large.png)
 The pixel size doesn't show the path taken but it does match it perfectly. And at large radii it can be percieved as going straight.
 
+## Question 6
+
+Another round of manual tuning. Here is the performance of bas values of `K = 2` and `T = 1`:
+![base mpc](mpc_base.png)
+I went through a few iteration and increased K up to `16`. This was nice, but it seemed like marginal improvement, especically given the computational cost it was implementing. The graphing was much smoother when I set it down to `8`.
+I increased `T` up to `6`, this was a good enough read on future planning that it didn't cause the oscilation/shakyness of the baseline.
+
+So final was:
+
+```yaml
+mpc:
+  K: 8
+  T: 10
+```
+
+### Circle
+
+![mpc circle](mpc_circle.png)
+
+### Wave
+
+![mpc circle](mpc_wave.png)
+
+### Saw
+
+![mpc saw](mpc_saw.png)
+Here we see the problem that is the saw. What makes this so difficult to traverse is that it requires an algorithm to be short sighted and near sighted. Without shortsighteness we cannot take the sharp curves, but without the longsighted approach, its hard to correct coming out the sharp curves appropriately. Here we can see how problematic that is. It doesnt have enough time at the end to reach the angle required to finish.
+
+## Question 7
+
+### Slalom 1-1
+
+![slalom 1](shalom_1.png)
+
+### Slalom 1-2
+
+![slalom 2](shalom_2.png)
+*Ending of path is in a rock so it can't reach it*
+
+## Question 8
+
+If I could make my own cost function I would include the following:
+
+1. A steering angle penalty so that we can have an easier time correcting mistakes
+2. Obstacle distance, I had problems on larger slaloms clipping the edge, I wouldnt mind some distance.
+3. A progress incentive, if we messed up, might as well take the mistake and keep going forward.
+
+## Question 9
+
+From my testing, on the hardest map we had, ironically the first algorithm, PID, was the most robust. Here we can see it take nice straights and corrections.
+![pid saw](pid_saw.png)
+
+Even more interesting, **PID** still excelled at higher speeds:
+![pid fast saw](pid_saw_fast.png)
+It did obviously miss the target a little and had a harder time correcting but still the same shape and decent error.
+
+Our most advanced algorithm, **MPC** struggled alot and kind of drove over everything:
+![mpc wierd saw](mpc_saw_wack.png)
+
+And **Pure pursuit** didn't even try:
+![pp died](pp_saw_death.png)
+It drove off the path and just died...
