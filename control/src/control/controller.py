@@ -16,7 +16,16 @@ def compute_position_in_frame(p, frame):
     """
     # BEGIN QUESTION 1.2
     "*** REPLACE THIS LINE ***"
-    raise NotImplementedError
+    x, y, θ = p
+    x_f, y_f, θ_f = frame  # Fixed variable name (was 0_f)
+
+    rotation_matrix = np.array([[np.cos(θ_f), np.sin(θ_f)],
+                                [-np.sin(θ_f), np.cos(θ_f)]])
+    distance = np.array([x - x_f, y - y_f]) 
+
+    error = rotation_matrix @ distance
+    return error
+
     # END QUESTION 1.2
 
 
