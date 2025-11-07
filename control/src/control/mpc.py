@@ -129,8 +129,16 @@ class ModelPredictiveController(BaseController):
         # coordinate of the final rollout state, and the x- and y- coordinate of
         # the reference state
         # BEGIN QUESTION 4.3
-        "*** REPLACE THIS LINE ***"
-        raise NotImplementedError
+        final_states = rollouts[:, -1, :]
+        
+        final_xy = final_states[:, :2]  
+        reference_xy = reference_xyt[:2]
+        
+        # Euclid distances between final and ref
+        distances = np.linalg.norm(final_xy - reference_xy, axis=1)
+        
+        costs = distances * self.error_w
+        return costs
         # END QUESTION 4.3
 
     def compute_collision_cost(self, rollouts, _):
@@ -159,8 +167,16 @@ class ModelPredictiveController(BaseController):
         # need one call to check_collisions_in_map.
 
         # BEGIN QUESTION 4.3
-        "*** REPLACE THIS LINE ***"
-        raise NotImplementedError
+        # Reshape rollouts from (K, T+1, 3) to (K*(T+1), 3)
+        all_states = rollouts.reshape(-1, 3)
+        
+        # Check collisions for all states at once
+        collision_results = self.check_collisions_in_map(all_states)
+        collision_matrix = collision_results.reshape(self.K, self.T + 1) # Reshape back
+        
+        collision_counts = np.sum(collision_matrix, axis=1)
+        costs = collision_counts * self.collision_w
+        return costs
         # END QUESTION 4.3
 
     def compute_rollout_cost(self, rollouts, reference_xyt):
