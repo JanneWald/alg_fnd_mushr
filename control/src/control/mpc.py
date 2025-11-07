@@ -220,12 +220,11 @@ class ModelPredictiveController(BaseController):
         self.sampled_controls[:, :, 0] = reference_xytv[3]
 
         # BEGIN QUESTION 4.4
-        "*** REPLACE THIS LINE ***"
-        rollouts = np.zeros((self.K, self.T + 1, 3))
-        # END QUESTION 4.4
-        # BEGIN QUESTION 4.4
-        "*** REPLACE THIS LINE ***"
-        costs = np.zeros(self.K)
+        # 1. Get rollouts for all control sequences
+        rollouts = self.get_rollout(pose, self.sampled_controls)
+        
+        # 2. Compute costs for all rollouts
+        costs = self.compute_rollout_cost(rollouts, reference_xytv)
         # END QUESTION 4.4
 
         # Set the controller's rollouts and costs (for visualization purposes).
@@ -236,8 +235,12 @@ class ModelPredictiveController(BaseController):
         # Hint: you may find the np.argmin function useful. Note that the
         # reference velocity has already been stored in self.sampled_controls.
         # BEGIN QUESTION 4.4
-        "*** REPLACE THIS LINE ***"
-        raise NotImplementedError
+        # 3. Find the best control sequence (lowest cost)
+        best_sequence_idx = np.argmin(costs)
+        
+        # 4. Return the first action from the best sequence
+        best_first_action = self.sampled_controls[best_sequence_idx, 0, :]
+        return best_first_action
         # END QUESTION 4.4
 
 
