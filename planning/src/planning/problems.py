@@ -46,33 +46,10 @@ class PlanarProblem(object):
 
         # Check that x and y are within the extents of the map.
         # BEGIN QUESTION 1.2
-        # Handle different extents formats
-        if len(self.extents) == 4:
-            x_min, x_max, y_min, y_max = self.extents
-        elif len(self.extents) == 2:
-            # Assume extents is [x_range, y_range] where each range is [min, max]
-            x_min, x_max = self.extents[0]
-            y_min, y_max = self.extents[1]
-        else:
-            # Fallback: use the entire permissible region if available
-            if self.permissible_region is not None and self.map_info is not None:
-                height, width = self.permissible_region.shape
-                # Convert pixel bounds to world coordinates
-                origin_x = self.map_info.origin[0]
-                origin_y = self.map_info.origin[1]
-                resolution = self.map_info.resolution
-                x_min = origin_x
-                x_max = origin_x + width * resolution
-                y_min = origin_y
-                y_max = origin_y + height * resolution
-            else:
-                # If no permissible region, assume infinite extents
-                x_min, x_max, y_min, y_max = -np.inf, np.inf, -np.inf, np.inf
-        
-        # Check bounds for x and y coordinates
-        within_x = (x >= x_min) & (x <= x_max)
-        within_y = (y >= y_min) & (y <= y_max)
-        valid = within_x & within_y
+        valid = (
+            (x >= self.extents[0, 0]) & (x < self.extents[0, 1]) &
+            (y >= self.extents[1, 0]) & (y < self.extents[1, 1])
+        )
         # END QUESTION 1.2
 
         # The units of the state are meters and radians. We need to convert the
@@ -90,26 +67,11 @@ class PlanarProblem(object):
         # integers. Then, index into self.permissible_region, remembering that
         # the zeroth dimension is the height.
         # BEGIN QUESTION 1.2
-        if self.map_info is not None and self.permissible_region is not None:
-            # Convert to integer indices for array indexing
-            x_pixel = states[:, 0].astype(int)
-            y_pixel = states[:, 1].astype(int)
-            
-            # Ensure pixel coordinates are within permissible_region bounds
-            height, width = self.permissible_region.shape
-            in_bounds = (x_pixel >= 0) & (x_pixel < width) & (y_pixel >= 0) & (y_pixel < height)
-            
-            # Only check collision for states that are within extents AND pixel bounds
-            check_mask = valid & in_bounds
-            
-            # Initialize all as having collision
-            collision_free = np.zeros_like(valid)
-            
-            # Set collision-free status for valid, in-bounds states
-            collision_free[check_mask] = self.permissible_region[y_pixel[check_mask], x_pixel[check_mask]]
-            
-            # Update valid array: states must be within extents AND collision-free
-            valid = valid & collision_free
+        x_pix = states[:, 0].astype(int)
+        y_pix = states[:, 1].astype(int)
+
+        # Only read permissible_region for states inside bounds
+        valid[valid] &= self.permissible_region[y_pix[valid], x_pix[valid]]
         # END QUESTION 1.2
 
         # Convert the units back from pixels to meters for the caller
