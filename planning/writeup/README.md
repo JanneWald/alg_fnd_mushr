@@ -54,3 +54,22 @@ Edges evaluated: 292086
 ```
 
 q42
+
+## Q5
+
+```bash
+lcl dwn:~/mushr_ws/src/alg_fnd_mushr/planning$ python3 scripts/run_search -m test/share/map1.txt -n 25 -r 3.0 --lazy --shortcut --show-edges r2 -s 1 1 -g 7 8
+Lazy: True
+Vertices: 25
+Edges: 51
+Running A*
+Path length: 12.960450156532826
+Planning time: 0.003015279769897461
+Edges evaluated: 14
+Shortcutting A* path
+Shortcut length: 12.591492106547538
+Shortcut time: 0.012484073638916016
+```
+
+q51
+q52
