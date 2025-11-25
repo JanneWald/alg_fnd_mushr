@@ -4,30 +4,75 @@
 
 Path length: 362.88692665140957
 q1
+![Shortest A*](q1.png)
 
 ## Q2
 
-Radius 61
-q21
+### Radius 61
 
-Radius 122
-q22
+```bash
+Path length: 363.068415217045   
+Planning time: 0.5983076095581055
+Edges evaluated: 9231
+```
 
-Radious 200
+![placeholder](q21.png)
+
+### Radius 122
+
+```bash
+Path length: 362.88692665140957
+Planning time: 2.3131773471832275
+Edges evaluated: 32820
+```
+
+![placeholder](q22.png)
+
+### Radious 200
+
+```bash
 Path length: 362.88669499958723
+Planning time: 6.023391962051392
+Edges evaluated: 73204
+```
+
+![placeholder](q23.png)
 
 ## Q3
 
-Verteces 545
+### Verteces 545
+
+```bash
 Path length: 362.88692665140957
+Planning time: 1.2819221019744873
+Edges evaluated: 18837
+```
 
-Verteces 1000
-Path length: 356.3329847638013
+![placeholder](q31.png)
 
-Verteces 1200
+### Verteces 1000
+
+```bash
 Path length: 356.3329847638013
+Planning time: 4.282504081726074
+Edges evaluated: 63705
+```
+
+![placeholder](q32.png)
+
+### Verteces 1200
+
+```bash
+Path length: 356.3329847638013
+Planning time: 6.295160531997681
+Edges evaluated: 92124
+```
+
+![placeholder](q33.png)
 
 ## Q4
+
+### Lazy A*
 
 ```bash
 lcl dwn:~/mushr_ws/src/alg_fnd_mushr/planning$ python3 scripts/run_search -m test/share/map2.txt -n 1200 -r 200 --lazy r2 -s 252 115 -g 350 350
@@ -40,7 +85,9 @@ Planning time: 3.12811279296875
 Edges evaluated: 9386
 ```
 
-q41
+![placeholder](q41.png)
+
+### A*
 
 ```bash
 lcl dwn:~/mushr_ws/src/alg_fnd_mushr/planning$ python3 scripts/run_search -m test/share/map2.txt -n 1200 -r 200  r2 -s 252 115 -g 350 350
@@ -53,7 +100,7 @@ Planning time: 23.43128275871277
 Edges evaluated: 292086
 ```
 
-q42
+![placeholder](q42.png)
 
 ## Q5
 
@@ -71,29 +118,51 @@ Shortcut length: 12.591492106547538
 Shortcut time: 0.012484073638916016
 ```
 
-q51
-q52
+### Planning
+
+![placeholder](q51.png)
+`Planning time: 0.003015279769897461`
+
+### Shortcutting
+
+![placeholder](q52.png)
+`Shortcut time: 0.012484073638916016`
 
 ## Q6
 
-r = 3
-Path length: 16.086911525242698
-q61
+### c = 3
 
-r = 4.5
-Path length: 14.77307984701639
-q62
+![placeholder](q61.png)
+`Path length: 16.086911525242698`
 
-r=9
-Path length: 13.606245510056146
-q63
+### c = 4.5
 
-r=15
-Path length: 13.20596227969313
-q64
+![placeholder](q62.png)
+`Path length: 14.77307984701639`
+
+### c = 9
+
+![placeholder](q63.png)
+`Path length: 13.606245510056146`
+
+### c = 15
+
+![placeholder](q63.png)
+`Path length: 13.20596227969313`
 
 ## Q7
 
-`roslaunch planning planner_sim.launch map:='$(find cse478)/maps/maze_0.yaml' num_vertices:=1000 connection_radius:=10 curvature:=1`
-q71
+$\kappa = \frac{\tan(\delta)}{L}$
+$\delta = 0.34, L = 0.33$
+$\tan(0.34) ≈ 0.35$
+$\frac{0.35}{0.34}≈1.06m$
 
+## Q8
+
+`roslaunch planning planner_sim.launch map:='$(find cse478)/maps/maze_0.yaml' num_vertices:=1000 connection_radius:=10 curvature:=1`
+![placeholder](q71.png)
+
+## Q9
+
+`roslaunch planning planner_sim.launch map:='$(find cse478)/maps/cse2_2.yaml' num_vertices:=1500 connection_radius:=10 curvature:=1 initial_x:=16 initial_y:=28`
+![placeholder](q81.png)
