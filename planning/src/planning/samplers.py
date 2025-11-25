@@ -58,8 +58,16 @@ class HaltonSampler(Sampler):
         index += 1
 
         # BEGIN QUESTION 1.1
-        "*** REPLACE THIS LINE ***"
-        raise NotImplementedError
+        # Compute radical-inverse in the given base
+        f = 1.0
+        result = 0.0
+
+        while index > 0:
+            f = f / base
+            result += f * (index % base)
+            index //= base
+
+        return result
         # END QUESTION 1.1
 
     def make_base_generator(self, base):
@@ -90,8 +98,10 @@ class HaltonSampler(Sampler):
 
         # Scale the batch of samples to fit the extents of the space.
         # BEGIN QUESTION 1.1
-        "*** REPLACE THIS LINE ***"
-        raise NotImplementedError
+        lower = self.extents[:, 0]
+        upper = self.extents[:, 1]
+        samples = lower + batch * (upper - lower)
+        return samples
         # END QUESTION 1.1
 
 
