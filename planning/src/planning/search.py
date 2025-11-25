@@ -58,7 +58,10 @@ def astar(rm, start, goal):
             # parent exists). If it's in collision, stop processing this entry;
             # we'll wait for another possible parent later in the queue.
             # BEGIN QUESTION 2.2
-            "*** REPLACE THIS LINE ***"
+            if entry.parent != NULL:
+                # Collision check parent -> node
+                if not rm.check_edge_validity(entry.parent, entry.node):
+                    continue  # discard this entry
             # END QUESTION 2.2
 
         expanded[entry.node] = True
