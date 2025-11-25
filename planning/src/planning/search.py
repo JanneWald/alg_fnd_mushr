@@ -144,8 +144,20 @@ def shortcut(rm, vpath, num_trials=100):
         indices = np.random.choice(len(vpath), size=2, replace=False)
         i, j = np.sort(indices)
         # BEGIN QUESTION 2.3
-        "*** REPLACE THIS LINE ***"
-        raise NotImplementedError
+        u = vpath[i]
+        v = vpath[j]
+
+        # Check collision-free straight edge
+        if rm.check_edge_validity(u, v):
+            # Compute the current subpath length between i and j
+            current_len = rm.compute_path_length(vpath[i:j+1])
+
+            # Straight-line distance (heuristic is Euclidean)
+            shortcut_len = rm.heuristic(u, v)
+
+            # If shortcut is strictly shorter, apply it
+            if shortcut_len < current_len:
+                vpath = vpath[:i+1] + vpath[j:]
         # END QUESTION 2.3
     return vpath
 
