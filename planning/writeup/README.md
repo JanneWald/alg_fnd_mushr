@@ -73,3 +73,27 @@ Shortcut time: 0.012484073638916016
 
 q51
 q52
+
+## Q6
+
+r = 3
+Path length: 16.086911525242698
+q61
+
+r = 4.5
+Path length: 14.77307984701639
+q62
+
+r=9
+Path length: 13.606245510056146
+q63
+
+r=15
+Path length: 13.20596227969313
+q64
+
+## Q7
+
+`roslaunch planning planner_sim.launch map:='$(find cse478)/maps/maze_0.yaml' num_vertices:=1000 connection_radius:=10 curvature:=1`
+q71
+
