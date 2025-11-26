@@ -70,7 +70,6 @@ class PlanarProblem(object):
         x_pix = states[:, 0].astype(int)
         y_pix = states[:, 1].astype(int)
 
-        # Only read permissible_region for states inside bounds
         valid[valid] &= self.permissible_region[y_pix[valid], x_pix[valid]]
         # END QUESTION 1.2
 

@@ -59,9 +59,9 @@ def astar(rm, start, goal):
             # we'll wait for another possible parent later in the queue.
             # BEGIN QUESTION 2.2
             if entry.parent != NULL:
-                # Collision check parent -> node
+                # check collision parent to node
                 if not rm.check_edge_validity(entry.parent, entry.node):
-                    continue  # discard this entry
+                    continue
             # END QUESTION 2.2
 
         expanded[entry.node] = True
@@ -147,15 +147,11 @@ def shortcut(rm, vpath, num_trials=100):
         u = vpath[i]
         v = vpath[j]
 
-        # Check collision-free straight edge
+        # check collision on edge
         if rm.check_edge_validity(u, v):
-            # Compute the current subpath length between i and j
             current_len = rm.compute_path_length(vpath[i:j+1])
-
-            # Straight-line distance (heuristic is Euclidean)
             shortcut_len = rm.heuristic(u, v)
 
-            # If shortcut is strictly shorter, apply it
             if shortcut_len < current_len:
                 vpath = vpath[:i+1] + vpath[j:]
         # END QUESTION 2.3

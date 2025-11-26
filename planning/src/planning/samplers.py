@@ -58,7 +58,6 @@ class HaltonSampler(Sampler):
         index += 1
 
         # BEGIN QUESTION 1.1
-        # Compute radical-inverse in the given base
         f = 1.0
         result = 0.0
 
