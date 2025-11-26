@@ -2,9 +2,9 @@
 
 ## Q1
 
-Path length: 362.88692665140957
-q1
 ![Shortest A*](q1.png)
+
+`Path length: 362.88692665140957`
 
 ## Q2
 
@@ -38,6 +38,10 @@ Edges evaluated: 73204
 
 ![placeholder](q23.png)
 
+### Summary
+
+Increasing the connection radius techinically produced slightly shorter paths. However this came at the cost of exponentially higher planning time and many more edge evaluations.
+
 ## Q3
 
 ### Verteces 545
@@ -69,6 +73,10 @@ Edges evaluated: 92124
 ```
 
 ![placeholder](q33.png)
+
+### Summary
+
+With the fixed radius 100, increasing the number of vertices did realistically improves path quality, up to a certain point(around 1000). This also increased planning time due to a larger roadmap and more edge evaluations.
 
 ## Q4
 
@@ -102,6 +110,10 @@ Edges evaluated: 292086
 
 ![placeholder](q42.png)
 
+### Summary
+
+As is seen in the results, the Lazy A* algorithm produces the same path but significantly faster. It only evaluated 3% of A* original verteces causing a speedup of 8.
+
 ## Q5
 
 ```bash
@@ -121,48 +133,72 @@ Shortcut time: 0.012484073638916016
 ### Planning
 
 ![placeholder](q51.png)
+
 `Planning time: 0.003015279769897461`
 
 ### Shortcutting
 
 ![placeholder](q52.png)
+
 `Shortcut time: 0.012484073638916016`
+
+### Differences
+
+The shortcut calculation does add significantly more time complexity. However the actual time difference is rather minimal. The quality of the path does decrease the total length but not by much 12.96 vs 12.59. While the edges created via shortuctting are techincally non colliding, the path from sampled edges does provide more leeway from hitting the obstacle, and has significanly more shallow curves. These are preffered metrics for a robot. 
 
 ## Q6
 
 ### c = 3
 
 ![placeholder](q61.png)
+
 `Path length: 16.086911525242698`
 
 ### c = 4.5
 
 ![placeholder](q62.png)
+
 `Path length: 14.77307984701639`
 
 ### c = 9
 
 ![placeholder](q63.png)
+
 `Path length: 13.606245510056146`
 
 ### c = 15
 
 ![placeholder](q63.png)
+
 `Path length: 13.20596227969313`
+
+### Differences
+
+As we can see the increasing curvature drastically reduces the turning radius. Increasing c makes it closer to the closed form, straight edge solution.  
 
 ## Q7
 
-$\kappa = \frac{\tan(\delta)}{L}$
-$\delta = 0.34, L = 0.33$
-$\tan(0.34) ≈ 0.35$
-$\frac{0.35}{0.34}≈1.06m$
+Κ = tan(δ)/L
+δ = 0.34, L = 0.33
+tan(0.34) ≈ 0.35
+0.35/0.34≈1.06m
 
 ## Q8
 
-`roslaunch planning planner_sim.launch map:='$(find cse478)/maps/maze_0.yaml' num_vertices:=1000 connection_radius:=10 curvature:=1`
+```bash
+roslaunch planning planner_sim.launch map:='$(find cse478)/maps/maze_0.yaml' num_vertices:=1000 connection_radius:=10 curvature:=1
+```
+
 ![placeholder](q71.png)
 
 ## Q9
 
-`roslaunch planning planner_sim.launch map:='$(find cse478)/maps/cse2_2.yaml' num_vertices:=1500 connection_radius:=10 curvature:=1 initial_x:=16 initial_y:=28`
+```bash
+roslaunch planning planner_sim.launch map:='$(find cse478)/maps/cse2_2.yaml' num_vertices:=1500 connection_radius:=10 curvature:=1 initial_x:=16 initial_y:=28
+```
+
 ![placeholder](q81.png)
+
+## Q10
+
+I did not change my motion models paramaters.
